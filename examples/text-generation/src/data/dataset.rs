@@ -8,19 +8,19 @@ pub struct TextGenerationItem {
 }
 
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-pub struct DbPediaItem {
-    pub content: String,
+pub struct C4Item {
+    pub text: String,
 }
 
-pub struct DbPediaDataset {
-    dataset: InMemDataset<DbPediaItem>,
+pub struct C4Dataset {
+    dataset: InMemDataset<C4Item>,
 }
 
-impl Dataset<TextGenerationItem> for DbPediaDataset {
+impl Dataset<TextGenerationItem> for C4Dataset {
     fn get(&self, index: usize) -> Option<TextGenerationItem> {
         self.dataset
             .get(index)
-            .map(|item| TextGenerationItem::new(item.content))
+            .map(|item| TextGenerationItem::new(item.text))
     }
 
     fn len(&self) -> usize {
@@ -28,22 +28,22 @@ impl Dataset<TextGenerationItem> for DbPediaDataset {
     }
 }
 
-impl DbPediaDataset {
+impl C4Dataset {
     pub fn train() -> Self {
-        let dataset: InMemDataset<DbPediaItem> =
-            HuggingfaceDatasetLoader::new("dbpedia_14", "train")
-                .extract_string("content")
-                .load_in_memory()
-                .unwrap();
+        let dataset: InMemDataset<C4Item> = HuggingfaceDatasetLoader::new("c4", "train")
+            .extract_string("text")
+            .config("en")
+            .load_in_memory()
+            .unwrap();
         Self { dataset }
     }
 
     pub fn test() -> Self {
-        let dataset: InMemDataset<DbPediaItem> =
-            HuggingfaceDatasetLoader::new("dbpedia_14", "test")
-                .extract_string("content")
-                .load_in_memory()
-                .unwrap();
+        let dataset: InMemDataset<C4Item> = HuggingfaceDatasetLoader::new("c4", "test")
+            .extract_string("text")
+            .config("en")
+            .load_in_memory()
+            .unwrap();
         Self { dataset }
     }
 }

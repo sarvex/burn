@@ -1,5 +1,5 @@
 use burn::optim::{decay::WeightDecayConfig, momentum::MomentumConfig};
-use text_generation::{training::ExperimentConfig, DbPediaDataset};
+use text_generation::{training::ExperimentConfig, C4Dataset};
 
 type Backend = burn_autodiff::ADBackendDecorator<burn_tch::TchBackend<burn::tensor::f16>>;
 
@@ -12,15 +12,15 @@ fn main() {
             .with_momentum(Some(MomentumConfig::new().with_nesterov(true))),
     );
 
-    text_generation::training::train::<Backend, DbPediaDataset>(
+    text_generation::training::train::<Backend, C4Dataset>(
         vec![
             burn_tch::TchDevice::Cuda(0),
             burn_tch::TchDevice::Cuda(1),
             burn_tch::TchDevice::Cuda(2),
             burn_tch::TchDevice::Cuda(3),
         ],
-        DbPediaDataset::train(),
-        DbPediaDataset::test(),
+        C4Dataset::train(),
+        C4Dataset::test(),
         config,
         "/tmp/text-generation",
     );
