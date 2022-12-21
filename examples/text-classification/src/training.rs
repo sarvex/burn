@@ -20,16 +20,16 @@ use std::sync::Arc;
 pub struct ExperimentConfig {
     transformer: TransformerEncoderConfig,
     optimizer: SgdConfig,
-    #[config(default = 256)]
+    #[config(default = 512)]
     max_seq_length: usize,
-    #[config(default = 16)]
+    #[config(default = 64)]
     batch_size: usize,
     #[config(default = 10)]
     num_epochs: usize,
 }
 
 pub fn train<B: ADBackend, D: TextClassificationDataset + 'static>(
-    device: B::Device,
+    devices: Vec<B::Device>,
     dataset_train: D,
     dataset_test: D,
     config: ExperimentConfig,
@@ -43,13 +43,13 @@ pub fn train<B: ADBackend, D: TextClassificationDataset + 'static>(
     let batcher_train = Arc::new(TextClassificationBatcher::<B>::new(
         tokenizer.clone(),
         n_classes,
-        device,
+        B::Device::default(),
         config.max_seq_length,
     ));
     let batcher_test = Arc::new(TextClassificationBatcher::<B::InnerBackend>::new(
         tokenizer.clone(),
         n_classes,
-        device,
+        B::Device::default(),
         config.max_seq_length,
     ));
 
@@ -81,7 +81,7 @@ pub fn train<B: ADBackend, D: TextClassificationDataset + 'static>(
         .metric_train_plot(LossMetric::new())
         .metric_valid_plot(LossMetric::new())
         .with_file_checkpointer::<f32>(2)
-        .devices(vec![device])
+        .devices(devices)
         .num_epochs(config.num_epochs)
         .build(model, optim);
 

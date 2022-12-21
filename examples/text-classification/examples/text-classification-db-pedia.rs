@@ -13,7 +13,7 @@ fn main() {
     );
 
     text_classification::training::train::<Backend, DbPediaDataset>(
-        burn_tch::TchDevice::Cuda(0),
+        vec![burn_tch::TchDevice::Cuda(0)],
         DbPediaDataset::train(),
         DbPediaDataset::test(),
         config,
