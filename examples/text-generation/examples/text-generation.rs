@@ -13,7 +13,12 @@ fn main() {
     );
 
     text_generation::training::train::<Backend, DbPediaDataset>(
-        burn_tch::TchDevice::Cuda(0),
+        vec![
+            burn_tch::TchDevice::Cuda(0),
+            burn_tch::TchDevice::Cuda(1),
+            burn_tch::TchDevice::Cuda(2),
+            burn_tch::TchDevice::Cuda(3),
+        ],
         DbPediaDataset::train(),
         DbPediaDataset::test(),
         config,

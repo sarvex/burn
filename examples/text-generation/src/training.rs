@@ -21,7 +21,7 @@ use std::sync::Arc;
 pub struct ExperimentConfig {
     transformer: TransformerEncoderConfig,
     optimizer: SgdConfig,
-    #[config(default = 256)]
+    #[config(default = 512)]
     max_seq_length: usize,
     #[config(default = 1)]
     batch_size: usize,
@@ -30,7 +30,7 @@ pub struct ExperimentConfig {
 }
 
 pub fn train<B: ADBackend, D: Dataset<TextGenerationItem> + 'static>(
-    device: B::Device,
+    devices: Vec<B::Device>,
     dataset_train: D,
     dataset_test: D,
     config: ExperimentConfig,
@@ -80,7 +80,7 @@ pub fn train<B: ADBackend, D: Dataset<TextGenerationItem> + 'static>(
         .metric_train_plot(LossMetric::new())
         .metric_valid_plot(LossMetric::new())
         .with_file_checkpointer::<f32>(2)
-        .devices(vec![device])
+        .devices(devices)
         .grads_accumulation(32)
         .num_epochs(config.num_epochs)
         .build(model, optim);
