@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use std::sync::{mpsc, Arc};
 use std::thread;
 
-static MAX_QUEUED_ITEMS: usize = 100;
+static MAX_QUEUED_ITEMS: usize = 20;
 
 pub struct MultiThreadDataLoader<O> {
     dataloaders: Vec<Arc<dyn DataLoader<O> + Send + Sync>>,

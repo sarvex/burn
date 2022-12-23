@@ -5,4 +5,4 @@ mod data;
 mod model;
 
 pub mod training;
-pub use data::C4Dataset;
+pub use data::AgNewsDataset;

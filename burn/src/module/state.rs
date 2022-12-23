@@ -192,6 +192,8 @@ where
         let value: serde_json::Value = self.into();
 
         let content = value.to_string();
+        std::mem::drop(value);
+
         encoder.write_all(content.as_bytes()).unwrap();
         let content_compressed = encoder.finish().unwrap();
 

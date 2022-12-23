@@ -8,15 +8,15 @@ pub struct TextGenerationItem {
 }
 
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
-pub struct C4Item {
+pub struct AgNewsItem {
     pub text: String,
 }
 
-pub struct C4Dataset {
-    dataset: InMemDataset<C4Item>,
+pub struct AgNewsDataset {
+    dataset: InMemDataset<AgNewsItem>,
 }
 
-impl Dataset<TextGenerationItem> for C4Dataset {
+impl Dataset<TextGenerationItem> for AgNewsDataset {
     fn get(&self, index: usize) -> Option<TextGenerationItem> {
         self.dataset
             .get(index)
@@ -28,20 +28,18 @@ impl Dataset<TextGenerationItem> for C4Dataset {
     }
 }
 
-impl C4Dataset {
+impl AgNewsDataset {
     pub fn train() -> Self {
-        let dataset: InMemDataset<C4Item> = HuggingfaceDatasetLoader::new("c4", "train")
+        let dataset: InMemDataset<AgNewsItem> = HuggingfaceDatasetLoader::new("ag_news", "train")
             .extract_string("text")
-            .config("en")
             .load_in_memory()
             .unwrap();
         Self { dataset }
     }
 
     pub fn test() -> Self {
-        let dataset: InMemDataset<C4Item> = HuggingfaceDatasetLoader::new("c4", "test")
+        let dataset: InMemDataset<AgNewsItem> = HuggingfaceDatasetLoader::new("ag_news", "test")
             .extract_string("text")
-            .config("en")
             .load_in_memory()
             .unwrap();
         Self { dataset }
